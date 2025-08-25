@@ -39,6 +39,9 @@ export default {
 	"scratch1/Scratch.exe": {
 		nicknames: ["1.0"],
 	},
+	"scratch1/Scratch.zip": {
+		notes: "Broken corrupted 27Feb06 zip"
+	},
 	"scratch1/Scratch1.3-jens-noteblock.image": {
 		infoLink: "https://en.scratch-wiki.info/wiki/Note_(block)",
 		nicknames: ["Scratch1.3.image", "modified 1.3 beta"],

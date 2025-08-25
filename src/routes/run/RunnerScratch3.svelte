@@ -1,4 +1,18 @@
 <script lang="ts">
+	/*
+		How the Scratch 3 runner works:
+		- This component (on /run) makes an iframe to /_scratch3.
+			That page will be replaced with the desired Scratch 3 build.
+		- The /_scratch3 iframe sends a message to /run indicating it is ready
+		- /run fetches the build's HTML from GitHub, and sends it over to
+			/_scratch3 (alongside a proxy URL used for assets)
+		- /run receives the HTML + proxy URL, sends the proxy URL over
+			to a service worker, replaces links to JavaScript files in the
+			HTML with blob: URLs and replaces the page with it
+		- Afterwards, Scratch 3 runs on /run. A service worker is used
+			to proxy all requests the page would normally make to /static/
+			straight to GitHub, using the proxy URL /run sent before
+	*/
 	import {base} from "$app/paths";
 	import {onMount, onDestroy} from "svelte";
 	import {rawUrl, repo} from "$lib/scratch3.ts";

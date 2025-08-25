@@ -1,9 +1,16 @@
 <script lang="ts">
 	const changelog: [String, string[]][] = [
 		[
+			"2025-08-25",
+			[
+				"Now located at cst1229.eu.org/TBCAMuseum (previously was on cst1229.github.io/TBCAMuseum).",
+			],
+		],
+		[
 			"2024-07-21",
 			[
 				"Added some post-v435.1 Scratch 2.0 builds, thanks to Pixelgamer1286 for giving them to me!",
+				"Added this changelog",
 			],
 		],
 		[

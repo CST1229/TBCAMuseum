@@ -9,6 +9,7 @@
 
 	if (browser) {
 		onMount(() => {
+			// prevent some warnings
 			history.pushState = () => {};
 			history.replaceState = () => {};
 
