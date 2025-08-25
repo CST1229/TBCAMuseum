@@ -148,7 +148,7 @@ Browse the Scratch 3.0 archives
 <h2 id="misc">Miscellaneous files</h2>
 <p>
 	See also: <a
-		href="https://tbca.nukley.com/files/Other%20Media/Other/HowToLBLisp.html"
+		href="https://tbca.nukley.com/files/Other%20Media/Other/HowToLBLisp.txt"
 		target="_blank">How to Run Logo Blocks .lisp Files</a
 	>
 	by
