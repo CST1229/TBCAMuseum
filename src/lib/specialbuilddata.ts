@@ -6,7 +6,7 @@ export default {
 	"scratch1/Scratch14Feb04.zip": {
 		nicknames: ["0.1"],
 	},
-	"scratch1/Scratch1Oct04.zip": {
+	"scratch1/Scratch01Oct04.zip": {
 		nicknames: ["0.2", "13Oct04"],
 	},
 	"scratch1/Scratch13Oct04-old.zip": {
@@ -97,4 +97,5 @@ export default {
 	"misc/YOUScratchProjectsConversion.zip": {
 		nicknames: ["2005 -> 2007 project conversions"],
 	},
+
 } as { [index: string]: SpecialBuildInfo };
