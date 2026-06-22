@@ -15,6 +15,9 @@ export default {
 	"scratch1/Scratch28Feb05.zip": {
 		nicknames: ["0.3"],
 	},
+	"scratch1/Scratch06Jan05.zip": {
+		notes: "06Jan06 but either i or someone else mislabeled it and im too lazy to change the filename",
+	},
 	"scratch1/Scratch14Mar05.zip": {
 		nicknames: ["0.4"],
 	},
