@@ -3,9 +3,9 @@
 	import iconInfo from "../assets/information.png";
 	import Build from "./Build.svelte";
 	import Changelog from "./Changelog.svelte";
-	import _builddata from "$lib/builddata.json";
-	import specialBuilddata from "$lib/specialbuilddata.ts";
-	import SqueakFilesystem from "$lib/SqueakFilesystem.svelte";
+	import _builddata from "#lib/builddata.json";
+	import specialBuilddata from "#lib/specialbuilddata.ts";
+	import SqueakFilesystem from "#lib/SqueakFilesystem.svelte";
 
 	const builddata = _builddata as BuilddataJSON;
 </script>
@@ -127,6 +127,11 @@
 		All the "Scratch Unlabelled" builds and Scratch Raspberry Pi.swf were
 		originally called just Scratch.swf, and renamed by me. I added the
 		suffix to make it clearer.
+	</li>
+	<li>
+		<strong>IMPORTANT:</strong> To get the editor to work on more versions*, I've forced the web runner to ScratchX mode.
+		The SWFs are NOT only ScratchX, if you run them in the standalone Flash Player (or a desktop version of Ruffle) they become normal.
+		<br/><br/><small>*Scratch 2.0 detects if it's running on web and, in that case, it turns itself into only the project player normally.</small>
 	</li>
 </ul>
 <ul>

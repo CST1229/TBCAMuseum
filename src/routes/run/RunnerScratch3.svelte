@@ -13,12 +13,15 @@
 			to proxy all requests the page would normally make to /static/
 			straight to GitHub, using the proxy URL /run sent before
 	*/
-	import {base} from "$app/paths";
-	import {onMount, onDestroy} from "svelte";
-	import {rawUrl, repo} from "$lib/scratch3.ts";
+	import { resolve } from "$app/paths";
 
-	export let file: string;
-	let iframe: HTMLIFrameElement;
+	import { onMount, onDestroy } from "svelte";
+	import { rawUrl, repo } from "#lib/scratch3.ts";
+
+	interface Props { file: string }
+
+	let { file }: Props = $props();
+	let iframe: HTMLIFrameElement = $state() as HTMLIFrameElement;
 
 	let path: string;
 
@@ -38,17 +41,9 @@
 		iframe.addEventListener("load", () => {
 			evListener = async ({data, source}) => {
 				if (data.command === "ready") {
-					const html = await (
-						await fetch(rawUrl + repo + path + "index.html")
-					).text();
-					source?.postMessage(
-						{
-							command: "runHtml",
-							html: html,
-							proxyUrl: rawUrl + repo + path,
-						},
-						{targetOrigin: "*"}
-					);
+					const html = await (await fetch(rawUrl + repo + path + "index.html")).text();
+
+					source?.postMessage({ command: "runHtml", html, proxyUrl: rawUrl + repo + path }, { targetOrigin: "*" });
 				}
 			};
 			window.addEventListener("message", evListener);
@@ -65,7 +60,11 @@
 	});
 </script>
 
-<iframe src="{base}/_scratch3" title="Scratch" bind:this={iframe}></iframe>
+<iframe
+	src="{resolve('_scratch3')}"
+	title="Scratch"
+	bind:this={iframe}
+></iframe>
 
 <style>
 	iframe {

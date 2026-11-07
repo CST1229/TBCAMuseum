@@ -1,53 +1,45 @@
 <script lang="ts">
-	import {browser} from "$app/environment";
+	import {settled} from "svelte";
+	import {browser} from "$app/env";
 	import RunnerFlash from "./RunnerFlash.svelte";
 	import RunnerScratch3 from "./RunnerScratch3.svelte";
 	import RunnerScratch3Picker from "./RunnerScratch3Picker.svelte";
 	import RunnerSqueak from "./RunnerSqueak.svelte";
 
-	let imports: Promise<any>;
-	let file: string = "";
-	let title: string = "";
+	let imports: Promise<any> = $state(Promise.resolve());
+	let file: string = $state("");
+	let title: string = $state("");
 
-	const enum RunType {
-		NONE,
-		NONEXISTENT,
-		SQUEAK,
-		FLASH,
-		SCRATCH3,
+	const RunType = {
+		NONE: "NONE",
+		NONEXISTENT: "NONEXISTENT",
+		SQUEAK: "SQUEAK",
+		FLASH: "FLASH",
+		SCRATCH3: "SCRATCH3",
 		// Scratch 3.0 commit picker
-		SCRATCH3PICKER,
+		SCRATCH3PICKER: "SCRATCH3PICKER",
 	}
-	let runType: RunType = RunType.NONE;
+	let runType: string = $state(RunType.NONE);
 
 	if (browser) {
-		window.RufflePlayer = window.RufflePlayer || {};
-
-		window.RufflePlayer.config = {
-			publicPath: "https://unpkg.com/@ruffle-rs/ruffle/",
-			autoplay: "on",
-			unmuteOverlay: "hidden",
-		};
 		reload();
 	}
 
-	function reload() {
+	async function reload() {
 		runType = RunType.NONE;
+
+		await settled();
 
 		file = location.hash.substring(1);
 		const isZip = file.endsWith(".zip") || file.endsWith(".xo");
 
 		title = decodeURIComponent(file.split("/").at(-1) || "");
 
-		if (
-			(file.startsWith("scratch1/") &&
-				(isZip || file.endsWith(".image"))) ||
-			(file.startsWith("/") && file.endsWith(".image"))
-		) {
+		if (file.startsWith("scratch1/") && (isZip || file.endsWith(".image")) || file.startsWith("/") && file.endsWith(".image")) {
 			runType = RunType.SQUEAK;
 			imports = Promise.all([
 				isZip ? import("@turbowarp/jszip") : null,
-				import("$lib/external/squeak_bundle.js"),
+				import("#lib/external/squeak_bundle.js"),
 			]);
 		} else if (file.startsWith("scratch2/") && file.endsWith(".swf")) {
 			runType = RunType.FLASH;
@@ -64,10 +56,10 @@
 </script>
 
 <svelte:window
-	on:hashchange={() => {
+	onhashchange={() => {
 		if (location.hash) reload();
 	}}
-/>
+></svelte:window>
 
 <svelte:head>
 	{#if title}
@@ -86,16 +78,16 @@
 		<p>Loading libraries...</p>
 	{:then imported}
 		{#if runType == RunType.SQUEAK}
-			<RunnerSqueak jszip={imported[0]} path={file}></RunnerSqueak>
+			<RunnerSqueak jszip={imported[0]} path={file} />
 		{:else if runType == RunType.FLASH}
-			<RunnerFlash path={file}></RunnerFlash>
+			<RunnerFlash path={file} />
 		{:else if runType == RunType.SCRATCH3PICKER}
 			<RunnerScratch3Picker
-				{file}
-				onProceed={() => (runType = RunType.SCRATCH3)}
-			></RunnerScratch3Picker>
+				file={file}
+				onProceed={() => runType = RunType.SCRATCH3}
+			/>
 		{:else if runType == RunType.SCRATCH3}
-			<RunnerScratch3 {file}></RunnerScratch3>
+			<RunnerScratch3 file={file} />
 		{/if}
 	{:catch error}
 		<p>Something went wrong: {error.message}</p>

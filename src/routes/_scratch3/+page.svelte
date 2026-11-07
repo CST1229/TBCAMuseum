@@ -3,9 +3,9 @@
 		The "heart" of the Scratch 3 runner, this is what eventually turns
 		into the editor.
 	*/
+	import { browser } from '$app/env';
 
-	import {browser} from "$app/environment";
-	import {onMount} from "svelte";
+	import { onMount } from "svelte";
 
 	if (browser) {
 		onMount(() => {
@@ -36,7 +36,7 @@
 							)) {
 								if (el.textContent || !el.src) continue;
 								await fetch(el.src).then(async (res) => {
-									(new Function(await res.text())).bind(el)();
+									new Function(await res.text()).bind(el)();
 								});
 							}
 						});

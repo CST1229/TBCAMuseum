@@ -3,24 +3,28 @@
 	import iconDownload from "../assets/disk.png";
 	import iconPlay from "../assets/control_play_blue.png";
 
-	import {base} from "$app/paths";
-	import buildpath from "$lib/buildpath.ts";
-	import {getSize} from "$lib/utils.ts";
+	import { resolve } from "$app/paths";
+	import buildpath from "#lib/buildpath.ts";
+	import {getSize} from "#lib/utils.ts";
 
-	export let name: string = "";
-	export let folder: string = "";
-	export let data: BuildInfo | null = null;
-	export let special: SpecialBuildInfo | null = null;
+	interface Props {
+		name?: string;
+		folder?: string;
+		data?: BuildInfo | null;
+		special?: SpecialBuildInfo | null;
+	}
+
+	const {
+		name = "",
+		folder = "",
+		data = null,
+		special = null
+	}: Props = $props();
 
 	const isZip = name.endsWith(".zip") || name.endsWith(".xo");
-	const canRun =
-		folder !== "misc/" &&
-		((folder === "scratch1/" && isZip) ||
-			name.endsWith(".image") ||
-			name.endsWith(".swf"));
-
-	let lastModified: string = "";
-	let notes: string = "";
+	const canRun = folder !== "misc/" && (folder === "scratch1/" && isZip || name.endsWith(".image") || name.endsWith(".swf"));
+	let lastModified: string = $state("");
+	let notes: string = $state("");
 	if (data) {
 		lastModified =
 			"Last modified: " + new Date(data.modified).toLocaleString();
@@ -51,8 +55,10 @@
 		><img src={iconDownload} alt="Download" draggable="false" /></a
 	>
 	{#if canRun}
-		<a href="{base}/run#{folder + name}"
-			><img src={iconPlay} alt="Run" draggable="false" /> {name}</a>
+		<a href="{resolve('run')}#{folder + name}">
+			<img src={iconPlay} alt="Run" draggable="false" />
+			{name}
+		</a>
 	{:else}
 		<a href={buildpath + folder + name}>{name}</a>
 	{/if}

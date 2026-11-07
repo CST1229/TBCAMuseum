@@ -1,18 +1,25 @@
 <script lang="ts">
 	import {onMount, onDestroy} from "svelte";
-	import {repo, pagesBranch, PAT_KEY, ghFetch} from "$lib/scratch3.ts";
+	import {repo, pagesBranch, PAT_KEY, ghFetch} from "#lib/scratch3.ts";
 
-	export let file: string;
-	export let onProceed: () => void = () => {};
+	interface Props {
+		file: string;
+		onProceed?: () => void;
+	}
+
+	let { file, onProceed = () => {} }: Props = $props();
 
 	// omg bfdi branches reference
-	let onBranches: boolean = false;
+	let onBranches: boolean = $state(false);
 
-	let commit: string = "";
+	let commit: string = $state("");
 
-	let refresh: number = 0;
-	let page: number = 1;
-	let maxPage: number = 1;
+	let refresh: number = $state(0);
+	let page: number = $state(1);
+	$effect(() => {
+		page = Math.max(1, Math.min(page ?? 1, maxPage));
+	});
+	let maxPage: number = $state(1);
 
 	const MAX_PAGE_REGEX = /(\d+)>;\s*rel="last"/i;
 	// branches to add at the start of the list instead of the end
@@ -37,7 +44,6 @@
 	}
 
 	async function makePageRequest(_page: number) {
-		page = Math.max(1, Math.min(page ?? 1, maxPage));
 		_page = page;
 
 		const res = await ghFetch(
@@ -135,7 +141,7 @@ ${text}`;
 					<li>
 						<a
 							href="#scratch3/{commit}/{branch}"
-							on:click={() => {
+							onclick={() => {
 								location.hash = `#scratch3/${commit}/${branch}`;
 								onProceed();
 							}}
@@ -163,13 +169,13 @@ ${text}`;
 
 	<button
 		title="Go to first page"
-		on:click={() => {
+		onclick={() => {
 			page = 0;
 		}}>&lt;&lt;</button
 	>
 	<button
 		title="Go to previous page"
-		on:click={() => {
+		onclick={() => {
 			page = Math.max(1, page - 1);
 		}}>&lt;</button
 	>
@@ -179,18 +185,18 @@ ${text}`;
 		min="1"
 		max={maxPage}
 		value={page}
-		on:change={setPage}
+		onchange={setPage}
 	/>
 	/<span class="max-pages">{maxPage}</span>
 	<button
 		title="Go to next page"
-		on:click={() => {
+		onclick={() => {
 			page = Math.min(maxPage, page + 1);
 		}}>&gt;</button
 	>
 	<button
 		title="Go to last page"
-		on:click={() => {
+		onclick={() => {
 			page = maxPage;
 		}}>&gt;&gt;</button
 	>
@@ -221,13 +227,13 @@ ${text}`;
 
 	<button
 		title="Go to first page"
-		on:click={() => {
+		onclick={() => {
 			page = 0;
 		}}>&lt;&lt;</button
 	>
 	<button
 		title="Go to previous page"
-		on:click={() => {
+		onclick={() => {
 			page = Math.max(1, page - 1);
 		}}>&lt;</button
 	>
@@ -237,18 +243,18 @@ ${text}`;
 		min="1"
 		max={maxPage}
 		value={page}
-		on:change={setPage}
+		onchange={setPage}
 	/>
 	/<span class="max-pages">{maxPage}</span>
 	<button
 		title="Go to next page"
-		on:click={() => {
+		onclick={() => {
 			page = Math.min(maxPage, page + 1);
 		}}>&gt;</button
 	>
 	<button
 		title="Go to last page"
-		on:click={() => {
+		onclick={() => {
 			page = maxPage;
 		}}>&gt;&gt;</button
 	>
@@ -256,7 +262,7 @@ ${text}`;
 
 <p>
 	<button
-		on:click={() => {
+		onclick={() => {
 			const text =
 				prompt(`Enter a personal access token you created here to increase GitHub's ratelimits:
 (Leave empty to remove, press Cancel to cancel)

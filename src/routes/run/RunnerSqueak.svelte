@@ -1,20 +1,24 @@
 <script lang="ts">
 	import {onDestroy, onMount} from "svelte";
-	import buildpath from "$lib/buildpath.ts";
+	import buildpath from "#lib/buildpath.ts";
 	import type JSZip from "@turbowarp/jszip";
-	import SqueakFilesystem from "$lib/SqueakFilesystem.svelte";
+	import SqueakFilesystem from "#lib/SqueakFilesystem.svelte";
 
-	export let path: string = "";
 
-	export let jszip: JSZip | null = null;
+	interface Props {
+		path?: string;
+		jszip?: JSZip | null;
+	}
+
+	let { path = "", jszip = null }: Props = $props();
 	let squeak: any = window.Squeak;
 	let squeakjs: any = window.SqueakJS;
 
-	let canvas: HTMLCanvasElement;
-	let spinner: HTMLDivElement;
+	let canvas: HTMLCanvasElement = $state();
+	let spinner: HTMLDivElement = $state();
 	let squeakDisplay: any;
 
-	let loadingZip: Boolean = false;
+	let loadingZip: Boolean = $state(false);
 
 	onMount(async () => {
 		// make squeakjs use our jszip instead of theirs

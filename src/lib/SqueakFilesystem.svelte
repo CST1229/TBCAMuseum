@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {browser} from "$app/environment";
+	import { browser } from '$app/env';
 
 	import iconFolder from "../assets/folder.png";
 	import iconFolderAdd from "../assets/folder_add.png";
@@ -7,16 +7,20 @@
 	import iconRefresh from "../assets/arrow_refresh.png";
 	import SqueakFileList from "./SqueakFileList.svelte";
 
-	export let squeak: any = null;
-	let loadingSqueak: boolean = false;
+	interface Props {
+		squeak?: any;
+	}
 
-	let fsButton: any = null;
-	let fsDiv: any = null;
+	let { squeak = $bindable(null) }: Props = $props();
+	let loadingSqueak: boolean = $state(false);
 
-	let enabled: boolean = false;
-	let opened: boolean = false;
+	let fsButton: any = $state(null);
+	let fsDiv: any = $state(null);
 
-	let rootFileList: any = null;
+	let enabled: boolean = $state(false);
+	let opened: boolean = $state(false);
+
+	let rootFileList: any = $state(null);
 
 	if (browser) {
 		squeak = globalThis?.Squeak;
@@ -53,14 +57,14 @@
 	}
 </script>
 
-<svelte:body on:mousedown={onPageClick} />
+<svelte:body onmousedown={onPageClick}></svelte:body>
 
 {#if enabled}
 	<button
 		bind:this={fsButton}
 		title="Filesystem"
 		class="fs-button"
-		on:click={toggleFs}
+		onclick={toggleFs}
 		><img
 			class="fs-icon"
 			src={iconFolder}
@@ -75,24 +79,29 @@
 			{:else}
 				<div class="fs-header">
 					<button
-						on:click={hideFs}
+						onclick={hideFs}
 						title="Hide the filesystem completely until you refresh the page."
 						>Hide Completely</button
 					>
 					<div class="flex-grow"></div>
-					<button title="Refresh" on:click={() => rootFileList.reload()}>
-						<img src={iconRefresh} alt="Refresh">
-					</button>
-					<button title="Add Folder" on:click={() => rootFileList.addFolder()}>
-						<img src={iconFolderAdd} alt="Add Folder">
-					</button>
-					<button title="Import File" on:click={() => rootFileList.addFile()}>
-						<img src={iconFileAdd} alt="Import File">
-					</button>
+
+					<button
+						title="Refresh"
+						onclick={() => rootFileList.reload()}
+					><img src={iconRefresh} alt="Refresh" /></button>
+
+					<button
+						title="Add Folder"
+						onclick={() => rootFileList.addFolder()}
+					><img src={iconFolderAdd} alt="Add Folder" /></button>
+
+					<button
+						title="Import File"
+						onclick={() => rootFileList.addFile()}
+					><img src={iconFileAdd} alt="Import File" /></button>
 				</div>
-				<div class="fs-body">
-					<SqueakFileList bind:this={rootFileList} {squeak}></SqueakFileList>
-				</div>
+
+				<div class="fs-body"><SqueakFileList bind:this={rootFileList} squeak={squeak} /></div>
 			{/if}
 		</div>
 	{/if}

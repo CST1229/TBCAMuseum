@@ -1,10 +1,14 @@
 <script lang="ts">
 	import SqueakFile from "./SqueakFile.svelte";
 
-	export let path: string = "";
-	export let squeak: any = null;
+	interface Props {
+		path?: string;
+		squeak?: any;
+	}
 
-	let files: SqueakFileArr[] | null = null;
+	let { path = "", squeak = null }: Props = $props();
+
+	let files: SqueakFileArr[] | null = $state(null);
 
 	reload();
 	function reload() {

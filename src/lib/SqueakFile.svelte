@@ -9,18 +9,24 @@
 
 	import SqueakFileList from "./SqueakFileList.svelte";
 	import {goto} from "$app/navigation";
-	import {base} from "$app/paths";
-	import {getSize} from "$lib/utils.ts";
+	import {resolve} from "$app/paths";
+	import {getSize} from "#lib/utils.ts";
 
+	interface Props {
+		squeak?: any;
+		path?: string;
+		fileObj: SqueakFileArr;
+		onRemove?: () => void;
+	}
 
-	export let squeak: any = null;
+	let {
+		squeak = null,
+		path = "",
+		fileObj,
+		onRemove = () => {}
+	}: Props = $props();
 
-	export let path: string = "";
-	export let fileObj: SqueakFileArr;
-
-	export let onRemove: () => void = () => {};
-
-	let folderFileList: any;
+	let folderFileList: any = $state();
 
 	const FILENAME = 0;
 	const MODIFIED = 1;
@@ -28,8 +34,8 @@
 	const IS_FOLDER = 3;
 	const FILESIZE = 4;
 
-	$: fullPath = path + "/" + fileObj[FILENAME];
-	$: isImage = fileObj[FILENAME].endsWith(".image") && !fileObj[IS_FOLDER];
+	let fullPath = $derived(path + "/" + fileObj[FILENAME]);
+	let isImage = $derived(fileObj[FILENAME].endsWith(".image") && !fileObj[IS_FOLDER]);
 
 	let icon: string = fileObj[IS_FOLDER]
 		? iconFolder
@@ -81,36 +87,37 @@ ${err}`);
 		class="file-inner"
 		class:clickable={isImage || fileObj[IS_FOLDER]}
 		title={isImage ? "Click to run .image" : ""}
-		on:click={() => {
+		onclick={() => {
 			if (isImage) {
-				if (squeak._fromRunner)
-					location.hash = "#" + fullPath;
-				else
-					goto(`${base}/run#${fullPath}`);
+				if (squeak._fromRunner) location.hash = "#" + fullPath; else goto(resolve(`run#${fullPath}`));
 			}
 		}}
 	>
 		<img class="icon" src={icon} alt="" draggable="false" />
 		<div class="filename">{fileObj[FILENAME]}</div>
 		{#if !fileObj[IS_FOLDER]}
-			<button title="Download ({getSize(fileObj[FILESIZE])})" on:click={downloadMe}
+			<button title="Download ({getSize(fileObj[FILESIZE])})" onclick={downloadMe}
 				><img src={iconDisk} alt="Download" draggable="false" /></button
 			>
 		{:else}
-			<button title="Add Folder" on:click={addFolderMe}
+			<button title="Add Folder" onclick={addFolderMe}
 				><img src={iconFolderAdd} alt="Add Folder" draggable="false" /></button
 			>
-			<button title="Import File" on:click={addFileMe}
+			<button title="Import File" onclick={addFileMe}
 				><img src={iconFileAdd} alt="Import File" draggable="false" /></button
 			>
 		{/if}
-		<button title="Delete" on:click={deleteMe}
+		<button title="Delete" onclick={deleteMe}
 			><img src={iconDelete} alt="Delete" draggable="false" /></button
 		>
 	</summary>
 	{#if fileObj[IS_FOLDER]}
 		<div class="folder-files">
-			<SqueakFileList bind:this={folderFileList} {squeak} path={fullPath} />
+			<SqueakFileList
+				bind:this={folderFileList}
+				squeak={squeak}
+				path={fullPath}
+			/>
 		</div>
 	{/if}
 </svelte:element>
