@@ -1,6 +1,13 @@
 <script lang="ts">
 	const changelog: [String, string[]][] = [
 		[
+			"2026-11-07",
+			[
+				"Did some player hacks to get 2.0 versions booting to the editor in-browser (without editing the SWF )",
+				"Updated to Svelte 5 and SvelteKit 3",
+			],
+		],
+		[
 			"2025-08-25",
 			[
 				"Now located at cst1229.eu.org/TBCAMuseum (previously was on cst1229.github.io/TBCAMuseum).",
